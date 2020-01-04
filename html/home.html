@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>Halo | Home</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.css" rel="stylesheet">
+    <link href="../hover/css/hover.css" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        
+    </style>
+</head>
+
+<body>
+    <div class="drag-area" style="-webkit-app-region: drag">
+        <div class="logo-set-navbar">
+            <img class="logo-pic-navbar" src="../media/paperplane.png" alt="paper plane icon">
+        </div>
+        <div class="frame-icon-set" style="-webkit-app-region: no-drag;">
+            <div class="icon-container hvr-icon-down" id="mini-icon">
+                <i class="fa fa-minus hvr-icon" aria-hidden="=true"></i>
+            </div>
+            <div class="icon-container hvr-icon-rotate" id="close-icon">
+                <i class="fa fa-times hvr-icon" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="list-group sf-left list-group-flush" id="contact-list">
+        <!-- 需要js动态添加和删除练习人 -->
+        <div class="list-group-item disabled">
+            <span class="sf-list-group-title font-weight-light">
+                Groups & Members
+            </span>
+        </div>
+        <div class="list-group-item hvr-icon-rotate create-group" id="create-group">
+            Create Halo
+            <span class="badge badge-pill badge-primary"><i class="fa fa-plus hvr-icon" aria-hidden="true"></i></span>
+        </div>
+        <div id="sep-group-user"></div>
+    </div>
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        console.log('home show up?')
+
+        const { ipcRenderer, remote } = require('electron')
+        const currWindow = remote.getCurrentWindow()
+        const MainWindow = remote.require('./main.js')
+        const UUID = require('../js/utils.js').UUID
+        const user_info = null
+        let nowSession = null
+        window.$ = window.jQuery = require('../node_modules/jquery')
+
+        function addGroup(groupName, nowSession) {
+            let id = UUID()
+            // $('#create-group').after('<div class="list-group-item group" id="'+ id +'">' + groupName + '<span class="badge badge-primary badge-pill">' + groupCounter + '</span></div>')
+            $('#create-group').after('<div class="list-group-item group" id="'+ id +'">' + groupName + '<span class="badge badge-primary badge-pill">G</span></div>')
+            $(document).on('click', '#'+id, function () {
+                console.log("group click: " + groupName)
+                let chatWindow = MainWindow.createWindow('html/chatGroup.html',groupName,660,660,null,
+                    {'group-name': groupName, 'from': nowSession})
+                // let chatWindow = MainWindow.createWindow('html/chatGroup.html',groupName,630,700,null,groupName)
+                //chatWindow.show()
+                chatWindow.focus()
+            });
+        }
+
+        function addUser(fromUserName, toUserName) {
+            let id = UUID()
+            $('#sep-group-user').after('<div class="list-group-item p2p" id="'+ id +'">' + toUserName + '</div>')
+
+            $(document).on('click', '#'+id, function () {
+                console.log("user click: " + toUserName)
+                let chatWindow = MainWindow.createWindow('html/chatP2P.html',toUserName,660,660,null,
+                    {'from': fromUserName, 'to': toUserName})
+                //chatWindow.show()
+                chatWindow.focus()
+            });
+        }
+
+        $(document).ready(function () {
+            $('#close-icon').click(() => {
+                console.log('home window close')
+                currWindow.close()
+            })
+
+            $('#mini-icon').click(() => {
+                console.log('home window mini')
+                currWindow.minimize()
+            })
+
+            $('#create-group').click(()=>{
+                console.log('create group')
+                let createGroupWindow = MainWindow.createWindow('html/createGroup.html','createGroup',400,500,null,nowSession)
+                createGroupWindow.focus()
+            })
+        })
+
+        // 先给主进程发送消息，通知该窗口已经准备好了，之后再等待主进程发送消息
+        ipcRenderer.send('window-init-ready','hello')
+
+        ipcRenderer.once('window-init-info',(e,arg)=>{
+            console.log(e)
+            console.log(arg)
+            // addGroup('TGA', 17)
+            // addUser('Sekiro')
+            // for (gName in arg['group']) {
+            //     addGroup(gName, 1);
+            // }
+            // for (uName in arg['user']) {
+            //     if (uName != arg['nowSession']) {
+            //         addUser(uName);
+            //     }
+            // }
+            nowSession = arg['nowSession']
+            for (var i = 0; i < arg['group'].length; i = i + 1) {
+                addGroup(arg['group'][i], arg['nowSession'])
+            }
+            for(let i=0;i<arg['user'].length;i=i+1){
+                if(arg['user'][i] != arg['nowSession']){
+                    addUser(arg['nowSession'], arg['user'][i]);
+                }
+            }
+        })
+
+        ipcRenderer.on('listAppend', (e, arg) => {
+            console.log(arg)
+            addUser(arg['from'], arg['to'])
+        })
+
+        ipcRenderer.on('groupAppend', (e, arg) => {
+            console.log(arg)
+            addGroup(arg, nowSession)
+        })
+
+    </script>
+</body>
+
+</html>

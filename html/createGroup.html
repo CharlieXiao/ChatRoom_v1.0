@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>Halo | Create Group</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.css" rel="stylesheet">
+    <link href="../hover/css/hover.css" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+    
+    </style>
+</head>
+
+<body>
+    <div class="drag-area" style="-webkit-app-region: drag;">
+        <!-- <div class="logo-set-navbar">
+                    <img class="logo-pic-navbar" src="../media/paperplane.png" alt="paper plane icon">
+                    <span class="logo-text-navbar">Halo | Home</span>
+                </div> -->
+        <div class="frame-icon-set" style="-webkit-app-region: no-drag;">
+            <div class="icon-container" id="mini-icon">
+                <i class="fa fa-minus" aria-hidden="=true"></i>
+            </div>
+            <div class="icon-container hvr-icon-rotate" id="close-icon">
+                <i class="fa fa-times hvr-icon" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="container sf-body-container">
+        <form class="form-signin" id="register-form">
+            <div class="logo-set">
+                <img class="mb-2 logo-pic" src="../media/paperplane.png" alt="paper plane icon" width="75" height="75">
+                <h1 class="mb-3 display-4 logo-text">Halo</h1>
+            </div>
+            <h2 class="mb-3 font-weight-light">Create Group</h2>
+            <label for="inputGroup" class="sr-only">Group</label>
+            <input type="text" id="inputGroup" class="form-control" placeholder="Group Name" required autofocus>
+            <!-- <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required> -->
+            <!-- <div class="hvr-icon-forward text-icon-set">
+                <i class="fa fa-angle-right hvr-icon text-icon" aria-hidden="true"></i>
+                <a href="#" id="register-link">register</a>
+            </div> -->
+            <button class="btn btn-lg btn-primary btn-block mt-4" type="submit" id="sign-button">Create</button>
+        </form>
+    </div>
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        const { ipcRenderer, remote } = require('electron')
+        const currWindow = remote.getCurrentWindow()
+        const MainWindow = remote.require('./main.js')
+        // const nowSession = remote.require('./main.js')
+        const windows = remote.require('./main.js')
+        let nowSession = null
+        window.$ = window.jQuery = require('../node_modules/jquery')
+        $(document).ready(function () {
+            $('#close-icon').click(() => {
+                console.log('register window close')
+                MainWindow.closeChildWindow(currWindow,'createGroup')
+            })
+
+            $('#mini-icon').click(()=>{
+                console.log('register window mini')
+                currWindow.minimize()
+            })
+
+            $('#register-form').submit(() => {
+                console.log('log in')
+                let group = $('#inputGroup').val()
+                MainWindow.sendMessageToServer(currWindow, {
+                    'group-name': group,
+                    'type': 'create-group',
+                    'nowSession': nowSession
+                })
+                return false
+            })
+        })
+        
+        ipcRenderer.on('msg-sent', (e, msg) => {
+            console.log(msg)
+        })
+
+        ipcRenderer.send('window-init-ready',null)
+
+        ipcRenderer.once('window-init-info', (e, msg) => {
+            console.log(msg)
+            nowSession = msg
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,369 @@
+html{
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  padding: 1.5rem 0 0 0;
+}
+
+.drag-area{
+    -webkit-app-region:drag;
+    width: 100%;
+    /* text-align可以设置右对齐; */
+    /* text-align: right; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -1.5rem;
+    height: 1.5rem;
+    color: rgb(193,193,193);
+}
+
+.frame-icon-set{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.icon-container{
+  padding: 0 1rem;
+  height: 100%;
+}
+
+.icon-container:hover{
+  cursor: pointer;
+  /* opacity: 0.7; */
+  background-color: rgb(230,230,230);
+  color: rgba(100,100,100);
+}
+
+#close-icon:hover{
+  background-color: red;
+  color: white;
+}
+
+.logo-set-navbar{
+  text-align: left;
+}
+
+.logo-pic-navbar{
+  height: 1rem;
+  margin: .25rem .5rem .25rem .5rem;
+  user-select: none;
+}
+
+.log-navbar-text{
+  color: rgb(75,75,75);
+}
+
+.register-set{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  color: #007bff;
+}
+
+.register-set:hover{
+  color: #2770bf;
+  cursor: pointer;
+}
+
+#register-link{
+  margin-left: .5rem;
+}
+
+#register-link:hover{
+  text-decoration: underline;
+}
+
+.logo-set{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+}
+
+.logo-pic{
+    box-sizing: border-box;
+    margin: 0 1rem;
+    user-select: none;
+}
+
+.logo-text{
+    box-sizing: border-box;
+    margin-top: auto;
+    user-select: none;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.sf-container{
+  padding: 0 1rem 0 1rem;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.sf-left{
+  height: 100%;
+  overflow: hidden;
+  padding-right: 8px;
+  box-shadow: .25rem 2rem .75rem rgba(0,0,0,0.075)!important;
+}
+
+.sf-left:hover{
+  /* 设置在滚动时显示滚动条 */
+  overflow: auto;
+}
+
+.list-group-item{
+  border:none;
+  border-radius: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.list-group-item:hover{
+  /* background-color: rgba(235,235,235); */
+  background-color: rgb(230,230,230);
+  cursor: pointer;
+}
+
+.sf-right{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 .5rem 1.5rem ;
+}
+
+.sf-display-area{
+  height: 65%;
+  overflow: auto;
+}
+
+.sf-input-area{
+  height: 35%;
+  border-top: solid 1px rgb(234,234,234);
+  padding-top: 2rem;
+}
+
+.list-icon{
+  margin-top: -2rem;
+  height: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.list-icon-item{
+  padding-right: 1rem;
+}
+
+.list-icon-item:hover{
+  cursor: pointer;
+}
+
+.sf-input-form{
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-content: flex-end;
+}
+
+.sf-input-frame{
+  background: transparent;
+  border-radius: 0;
+}
+
+.sf-submit-button{
+  margin: 0;
+  margin-left: auto;
+  margin-top: 1rem;
+  border-radius: 0;
+  /* position: absolute;
+  right: 1.5rem;
+  bottom: .5rem; */
+}
+
+.button-text{
+  margin-left: .25rem;
+}
+
+::-webkit-scrollbar{
+  /* //滚动条整体部分 */
+  opacity: 0;
+  width: 8px;
+}
+
+::-webkit-scrollbar-button{
+  /* //滚动条两端的按钮 */
+  height: 0;
+}
+
+::-webkit-scrollbar-track{
+  /* // 外层轨道 */
+  opacity: 0;
+}
+
+::-webkit-scrollbar-track-piece{
+  /* //内层轨道，滚动条中间部分（除去） */
+  opacity: 0;
+}
+
+::-webkit-scrollbar-thumb{
+  /* //滚动条里面可以拖动的那个 */
+  background-color: rgba(200,200,200,0.3);
+  border-radius: 20px;
+  width: 8px;
+  height: 40px;
+}
+
+::-webkit-scrollbar-corner{
+  /* //边角 */
+  height: 0;
+}
+
+::-webkit-resizer{
+  /* ///定义右下角拖动块的样式 */
+  height: 0;
+}
+
+.sf-chat-content-others{
+  display: flex;
+  flex-direction: row;
+  margin: .5rem 0;
+  margin-right: auto;
+  /* max-width: 70%; */
+  justify-content: flex-start;
+  padding-left: .5rem;
+}
+
+.sf-chat-content-self{
+  display: flex;
+  flex-direction: row;
+  margin: .5rem 0;
+  margin-left: auto;
+  /* max-width: 70%; */
+  justify-content: flex-end;
+  padding-right: .5rem;
+}
+
+.user-avatar{
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+}
+
+.message{
+  margin: 0 .5rem;
+}
+
+.message-detail-others{
+  white-space: pre-line;
+  background-color: rgb(230,230,230);
+  border-radius: 5px;
+  padding:.5rem;
+}
+
+.message-detail-self{
+  white-space: pre-line;
+  background-color: #007bff;
+  border-radius: 5px;
+  padding:.5rem;
+  color: white;
+}
+
+.message-detail-self::selection{
+  background-color: white;
+  color: black;
+}
+
+.user-name-self{
+  text-align: right;
+  user-select: none;
+}
+
+.user-name-others{
+  user-select: none;
+}
+
+.sf-show-group{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+.sf-content{
+  /* 动态修改属性，当插入时将其宽度变为80% */
+  width: 100%;
+  height: 100%;
+  padding:0 1rem;
+}
+
+.sf-list-group-title{
+  font-weight: bold;
+}
+
+.message-pic{
+  width: 300px;
+}
+
+.sf-group-member{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.file:hover{
+  cursor: pointer;
+}
+
+.file-detail-text{
+  font-size: 1.5rem;
+  margin-left: 1rem;
+}

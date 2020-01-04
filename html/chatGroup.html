@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>Halo | Login</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.css" rel="stylesheet">
+    <link href="../hover/css/hover.css" rel="stylesheet" media="all">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="drag-area" style="-webkit-app-region: drag">
+        <div class="logo-set-navbar">
+            <img class="logo-pic-navbar" src="../media/paperplane.png" alt="paper plane icon">
+            <span id="window-title" style="user-select: none; color: black;">hola</span>
+        </div>
+        <div class="frame-icon-set" style="-webkit-app-region: no-drag;">
+            <div class="icon-container hvr-icon-down" id="mini-icon">
+                <i class="fa fa-minus hvr-icon" aria-hidden="=true"></i>
+            </div>
+            <div class="icon-container hvr-icon-rotate" id="close-icon">
+                <i class="fa fa-times hvr-icon" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="sf-show-group">
+        <div class="sf-content" style="width: 100%;">
+            <div class="sf-display-area" id="chatBox">
+                <div>
+                    <span id="contactor_"></span>
+                </div>
+            </div>
+            <div class="sf-input-area">
+                <div class="list-icon">
+                    <div class="hvr-icon-forward list-icon-item" id="open-file">
+                        <i class="fa fa-folder hvr-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="hvr-icon-forward list-icon-item" id="open-pic">
+                        <i class="fa fa-file-image hvr-icon" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <form class="form-group sf-input-form" id="input-form">
+                    <textarea class="form-control sf-input-frame" rows="4" id="input-frame"></textarea>
+                    <button type="submit" class="btn btn-primary mb-2 sf-submit-button hvr-icon-forward">
+                        <i class="fa fa-paper-plane hvr-icon" aria-hidden="true"></i>
+                        <span class="button-text">Send</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- <div class="sf-group-member" style="width: 15%;">
+            <div class="list-group list-group-flush" id="group-list">
+                <div class="list-group-item disabled">
+                    <span class="sf-list-group-title font-weight-light">Members</span>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <!-- bootstrap.bundle.min.js 用于弹窗、提示、下拉菜单，包含了 popper.min.js -->
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        const { ipcRenderer, remote } = require('electron')
+        const currWindow = remote.getCurrentWindow()
+        const MainWindow = remote.require('./main.js')
+        // const nowSession = remote.require('./main.js')
+        const UUID = require('../js/utils.js').UUID
+        const { dialog } = require('electron').remote
+        let windowMessage = null
+        window.$ = window.jQuery = require('../node_modules/jquery')
+
+        function addOthers(userName, msg) {
+            $('#chatBox').append('<div class="sf-chat-content-others"><img src="../media/halo.png" alt="user-avatar" class="user-avatar"><div class="message"><div class="user-name-others">' +
+                userName + '</div><div class="message-detail-others">' + msg + '</div></div></div>')
+            console.log('addOthers')
+        }
+
+        function addSelf(userName, msg) {
+            $('#chatBox').append('<div class="sf-chat-content-self"><div class="message"><div class="user-name-self">' +
+                userName + '</div><div class="message-detail-self">' + msg + '</div></div><img src="../media/halo.png" alt="user-avatar" class="user-avatar"></div>')
+            console.log('addSelf')
+        }
+
+        function photo(filepath){
+            return '<img src="'+filepath+'" class="message-pic">'
+        }
+
+        function file(filename, filepath) {
+            // 还需要响应点击事件
+            id = UUID()
+            code = '<div class="file hvr-icon-forward" id="'+ id+'" ><i class="fa fa-file hvr-icon" aria-hidden="true"></i><span class="file-detail-text">'+filename+'</span></div>'
+            $(document).on('click', '#'+id, function () {
+                console.log("open file path " + filepath)
+            });
+            return code
+        }
+
+        $(document).ready(function () {
+            $('#close-icon').click(() => {
+                console.log('chat-p2p window close')
+                MainWindow.closeChildWindow(currWindow,windowMessage['group-name'])
+                //currWindow.close()
+                //currWindow.close()
+            })
+
+            $('#mini-icon').click(() => {
+                console.log('chat-p2p window mini')
+                currWindow.minimize()
+            })
+
+            $('#open-file').click(() => {
+                let res = dialog.showOpenDialogSync(currWindow)
+                console.log(res)
+            })
+
+            $('#open-pic').click(() => {
+                let res = dialog.showOpenDialogSync(currWindow, {
+                    filters: [
+                        { name: 'Images', extensions: ['jpg', 'png', 'gif'] }
+                    ]
+                })
+                console.log(res)
+                // res便是文件打开目录
+            })
+
+            $('#input-form').submit(()=>{
+                console.log($('#input-frame').val())
+                addSelf(windowMessage['from'], $('#input-frame').val())
+                MainWindow.sendMessageToServer(currWindow, {
+                    'type': 'Group',
+                    'from': windowMessage['from'],
+                    'group-name': windowMessage['group-name'],
+                    'text': $('#input-frame').val()
+                })
+                // 发送之后将其打开
+                $('#input-frame').val("")
+                $('#input-frame').focus()
+                return false
+            })
+
+            $("#window-title").text(windowMessage['group-name'])
+            $("title").val(windowMessage['group-name'])
+        })
+
+        ipcRenderer.send('window-init-ready',null)
+
+        ipcRenderer.once('window-init-info', (e, arg) => {
+            console.log(arg)
+            windowMessage = arg
+            // $(document).ready(()=>{
+            //     $('#contact_').val(arg)
+            // })
+            // addOthers('Mary','Whiat\nasdasd\n??')
+            // addSelf('Charlie','niAsd?\nasdasd?\nasdas')
+            // addOthers('Mary','Whiat\nasdasd\n??')
+            // addSelf('Charlie','niAsd?\nasdasd?\nasdas')
+            // addOthers('Mary','Whiat\nasdasd\n??')
+            // addSelf('Charlie','niAsd?\nasdasd?\nasdas')
+            // addOthers('Mary','Whiat\nasdasd\n??')
+            // addSelf('Charlie','niAsd?\nasdasd?\nasdas')
+            // addSelf('charlie', photo('../media/halo.png'))
+            // addSelf('charlie', file('dasd.avi', 'C:/path/to/your/file'))
+            // addOthers('charlie', file('dasd.avi', 'C:/asdasd/asdas/.'))
+        })
+
+        ipcRenderer.on('msgAppend', (e, arg) => {
+            console.log(arg)
+            addOthers(arg['from'], arg['text'])
+        })
+    </script>
+</body>
+
+</html>
